@@ -1,0 +1,329 @@
+{% extends "../../base.html" %}
+
+{% block crumbs %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li>
+                <a href="/yqjr/index">主页</a>
+            </li>
+            <li class="active">
+                <a class="this">基础信息</a>
+            </li>
+            <li class="active">
+                <a class="this-page">接口管理</a>
+            </li>
+            <li class="active">
+                <a class="">添加接口</a>
+            </li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加接口</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-horizontal">
+<!--                    接口名称-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">接口名称</label>
+                        <div class="col-sm-8">
+                            <input type="text" id="if_name" name="if_name" class="form-control">
+                        </div>
+                    </div>
+<!--接口描述-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">接口描述</label>
+                        <div class="col-sm-8">
+                            <textarea id="description" name="description" placeholder="请输入内容" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+<!--请求参数-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">请求参数</label>
+                        <div class="col-sm-8">
+                            <textarea id="request_body_data" name="request_body_data" placeholder="请输入请求参数" class="form-control" rows="3"></textarea>
+                        </div>
+                        <!--
+                        <div class="col-sm-8">
+                            <button id="add_request_body" class="btn btn-outline btn-primary" type="button"><i
+                                    class="fa fa-plus-square-o"></i> 编辑
+                            </button>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <table id="request_body" class="table col-sm-10">
+                                <thead>
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>值</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr><td>-ip</td><td name='ip_name' contenteditable='true'></td></tr>
+                                <tr><td>-u</td><td name='u_name' contenteditable='true'></td></tr>
+				                <tr><td>-p</td><td name='p_name' contenteditable='true'></td></tr>
+				                <tr><td>-s</td><td name='s_name' contenteditable='true'></td></tr>
+				                <tr><td>-j</td><td name='j_name' contenteditable='true'></td></tr>
+				                <tr><td><button class='btn btn-outline btn-primary' onclick='confirm(this)'>确认按钮</button></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        -->
+                    </div>
+                    <!--返回参数-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">返回参数</label>
+                        <div class="col-sm-8">
+                            <textarea id="response_body_data" name="response_body_data" placeholder="请输入返回参数" class="form-control" rows="3"></textarea>
+                        </div>
+                        <!--
+                        <div class="col-sm-8">
+                            <button id="add_response_body" class="btn btn-outline btn-primary" type="button"><i
+                                    class="fa fa-plus-square-o"></i>&nbsp;添加返回参数
+                            </button>
+                        </div>
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <table id="response_body" class="table col-sm-10">
+                                <thead>
+                                <tr>
+                                    <th>参数名</th>
+                                    <th>备注</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        -->
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-4 col-sm-6">
+                            <button id="sumbit" class="btn btn-primary">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block javascript %}
+<script>
+
+
+    function del_step(obj) {
+        var tr = obj.parentNode.parentNode;
+        var tbody = tr.parentNode;
+        tbody.removeChild(tr);
+    }
+
+    function fill() {
+
+        var storage=window.sessionStorage;
+        var if_id = storage.if_id;
+        var if_name = storage.if_name;
+        var description = storage.description;
+        var request_body_data = storage.request_body_param;
+        var response_body_data = storage.response_body_param;
+
+        if (if_name != null) {
+            $("#if_name").attr("value",if_name);
+        }
+        if (description != null) {
+            $("#description").val(description);
+        }
+        if (request_body_data != null) {
+            $("#request_body_data").val(request_body_data);
+        }
+
+        if (response_body_data != null) {
+            $("#response_body_data").val(response_body_data);
+        }
+
+        /*
+        if (request_body_data != null) {
+            $(request_body).slideToggle();
+            // $(add_request_body).slideToggle();
+            // document.getElementById("add_request_body").innerHTML = "编辑";
+            $(add_request_body).after("<p id='body'>"+request_body_data+"</p>");
+
+        }
+        if (response_body_data != null) {
+
+        }
+        */
+
+
+    }
+
+    window.onload=fill;
+    window.onbeforeunload=function(e) {
+        // var e = window.event||e;
+        // e.returnValue=("确定离开当前页面吗？");
+        sessionStorage.clear()
+    }
+
+<!-- 接口请求参数表单点击确认 -->
+    function confirm(obj){
+        var tableId = document.getElementById("request_body");
+        var ip = tableId.rows[1].cells[1].innerHTML;
+        var u = tableId.rows[2].cells[1].innerHTML;
+        var p = tableId.rows[3].cells[1].innerHTML;
+        var s = tableId.rows[4].cells[1].innerHTML;
+        var j = tableId.rows[5].cells[1].innerHTML;
+
+        var body=new Array();
+        body.push("ctest")
+        if (ip != "") {
+            body.push("-ip");
+            body.push(ip);
+        }
+        if (u != ""){
+            body.push("-u");
+            body.push(u);
+        }
+        if (p == ""){
+
+        } else {
+            body.push("-p");
+            body.push(p);
+        }
+        if (s == ""){
+
+        } else {
+            body.push("-s");
+            body.push(s);
+        }
+        if (j == ""){
+
+        } else {
+            body.push("-j");
+            body.push(j);
+        }
+
+        var str = body.join(" ");
+        if ($("#body").is(":visible")) {
+            document.getElementById("body").innerHTML = str;
+        }else {
+            $(add_request_body).after("<p id='body'>"+str+"</p>");
+        }
+
+        // $(add_request_body).slideToggle();
+        // document.getElementById("add_request_body").innerHTML = "编辑";
+        $(request_body).slideToggle();
+    }
+
+
+    $(document).ready(function () {
+        //添加请求参数
+        $("#add_request_body").click(function () {
+            /*
+            之前做的点击打开表格的动画
+            var newRow = "<tr><td>-ip</td><td name='ip_name' contenteditable='true'></td></tr><tr><td>-u</td><td name='u_name' contenteditable='true'></td></tr><tr><td>-p</td><td name='p_name' contenteditable='true'></td></tr><tr><td>-s</td><td name='s_name' contenteditable='true'></td></tr><tr><td>-j</td><td name='j_name' contenteditable='true'></td></tr><tr><td><button class='btn btn-outline btn-primary' onclick='confirm(this)'>确认按钮</button></td></tr>"
+            $("#request_body tr:last").after(newRow);
+            */
+
+
+            if($("#body").is(":visible")) {
+                //编辑进入页面，点击编辑
+                $(request_body).slideToggle()
+            }
+
+
+        });
+
+
+        $("#add_response_body").click(function () {
+            var newRow = "<tr> <td name='var_name' contenteditable='true'></td><td name='var_remark' contenteditable='true'></td> <td> <button class='btn btn-danger' onclick='del_step(this)'>删除行</button> </td> </tr>";
+            $("#response_body tr:last").after(newRow);
+        });
+
+        $('#edit').click(function() {
+            debugger;
+            console.log(1);
+            var request_body_data = document.getElementById("body").innerText;
+            $(body).slideToggle();
+            alert("good");
+    });
+
+    });
+
+
+
+
+    <!--  页面点击保存时操作  -->
+    $('#sumbit').click(function () {
+
+        //debugger;
+
+        //if($("#body").is(":visible")) {
+
+
+
+        var if_id = window.sessionStorage.if_id;
+
+        var if_name = $("#if_name").val();
+        var description = $("textarea[name='description']").val();
+
+        var request_body_data;
+        var response_body_data;
+
+
+        //request_body_data = document.getElementById("body").innerText;
+        request_body_data = $("textarea[name='request_body_data']").val();
+        response_body_data = $("textarea[name='response_body_data']").val();
+
+        /*
+        var args = [];
+        $('#request_header tr').each(function (i) {                   // 遍历 tr
+            if (i == 0) return true;
+            var data = new Object();
+            $(this).find("td[name]").each(function () {
+                var name = $(this).attr("name");
+                data[name] = $(this).text();
+            });
+            args.push(data);
+        });
+        response_body_data = JSON.stringify(args);
+        */
+
+        $.ajax({
+            url: "/ctest/interface_add/",
+            type: "post",
+            data: {
+                "if_id": if_id,
+                "if_name": if_name,
+                "description": description,
+                "request_body_data": request_body_data,
+                "response_body_data": response_body_data,
+            },
+            // dataType: "json",
+
+            success: function () {
+                alert("保存成功");
+                window.location.replace("/ctest/interface/");
+            },
+            error: function () {
+                alert("error!错了错了");
+            }
+        });
+
+        /*
+        } else {
+            alert("请确认请求参数")
+        }
+        */
+    });
+
+</script>
+{% endblock %}

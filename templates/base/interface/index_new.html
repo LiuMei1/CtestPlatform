@@ -1,0 +1,145 @@
+{% extends "../../base.html" %}
+
+
+{% block crumbs %}
+<div class="row">
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li>
+                <a href="/yqjr/index">主页</a>
+            </li>
+            <li class="active">
+                <a class="this">基础信息</a>
+            </li>
+            <li class="active">
+                <a class="this-page">接口管理</a>
+            </li>
+        </ol>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel">
+            <div class="panel-heading">
+                <a href="/ctest/interface_add/" class="btn btn-primary">添加接口</a>
+            </div>
+            <div class="panel-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>接口名称</th>
+                        <th>接口描述</th>
+                        <th>请求参数</th>
+                        <th>返回参数</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for if in if_list %}
+                    <tr>
+                        <td>{{ if.if_id }}</td>
+                        <td>{{ if.if_name }}</td>
+                        <td>{{ if.description }}</td>
+                        <td>{{ if.request_body_param }}</td>
+                        <td>{{ if.response_body_param }}</td>
+                        <td>
+                            <a href="/ctest/interface_add/" class="layui-btn layui-btn-xs" lay-event="edit" onclick="edit_if(this)">编辑</a>
+                            <a href="javascript:void(0);" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="del_if(this)">删除</a>
+                            <a href="javascript:void(0);" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="exe" onclick="exe_if(this)">执行</a>
+
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block javascript %}
+<script>
+
+    function edit_if(obj) {
+        //debugger;
+        console.log(1);
+        var storage = window.sessionStorage;
+        var body = obj.parentElement.parentElement
+        storage['if_id'] = body.children[0].innerHTML;
+        storage['if_name'] = body.children[1].innerHTML;
+        storage['description'] = body.children[2].innerHTML;
+        storage['request_body_param'] = body.children[3].innerHTML;
+        storage['response_body_param'] = body.children[4].innerHTML;
+
+    }
+
+    function del_if(obj) {
+        var del = window.confirm("您确定删除吗？");
+        // debugger;
+        // console.log(1);
+
+
+        var if_id = obj.parentElement.parentElement.children[0].innerHTML
+
+        if (del) {
+            //从列表中移除
+            var tr = obj.parentNode.parentNode;
+            var tbody = tr.parentNode;
+            tbody.removeChild(tr);
+
+            $.ajax({
+                url: "/ctest/interface_del/",
+                type: "post",
+                data: {
+                    "if_id": if_id
+                },
+                // dataType: "json",
+
+                success: function () {
+
+                },
+                error: function () {
+                    alert("error!");
+                }
+            });
+
+        }else{
+
+        }
+
+    }
+
+    function exe_if(obj) {
+        //远程执行请求
+        var del = window.confirm("您确定执行吗？");
+
+        var if_id = obj.parentElement.parentElement.children[0].innerHTML
+
+        $.ajax({
+                url: "/ctest/interface_exe/",
+                type: "post",
+                data: {
+                    "if_id": if_id
+                },
+                // dataType: "json",
+
+                success: function () {
+                    alert("执行成功");
+                    window.location.replace("/ctest/interface/");
+                },rror: function () {
+                    alert("error!");
+                }
+        });
+    }
+
+
+</script>
+{% endblock %}
